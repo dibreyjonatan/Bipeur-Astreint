@@ -8,10 +8,10 @@ expediteur= None #"dibreyjonatan"
 keyword="mission"
 date=None
 (email,mot_de_passe)=donnes_connexions()
-
+mail_uid=None
 #  forme du critère (objet, expéditeur, mot-clé), lieu et mode de configuration.
 def detection() :
-    global sujet, corps, expediteur, keyword,date
+    global sujet, corps, expediteur, keyword,date,mail_uid
     date_premier_alerte=None # On memorise l'heure de la première détection
     nouvelle_date_alerte=None
     with MailBox("imap.gmail.com").login(email, mot_de_passe) as mailbox:
@@ -20,6 +20,7 @@ def detection() :
             sleep(10)
             # il prend le dernier mail 
             for msg in mailbox.fetch(limit=1, reverse=True):
+                mail_uid=msg.uid 
                 sujet=msg.subject
                 expediteur=msg.from_
                 date=msg.date
@@ -33,6 +34,7 @@ def detection() :
                 if nouvelle_date_alerte!=date_premier_alerte :
                     date_premier_alerte=nouvelle_date_alerte
                     print("alerte provient du boss !!!")
+                    print("le uid du mail est :",mail_uid)
                     print("date d'émission",date)
                     print("date de détection",datetime.now())
                 else :
