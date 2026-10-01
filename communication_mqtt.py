@@ -3,12 +3,11 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 class send_mqtt():
     def send(self, topic, value, hostname, port=1883):
-        print("DEBUG")
-        print("topic    =", repr(topic))
-        print("value    =", repr(value))
-        print("hostname =", repr(hostname))
-        print("port     =", repr(port))
-
+       # print("DEBUG")
+       # print("topic    =", repr(topic))
+        #print("value    =", repr(value))
+        #print("hostname =", repr(hostname))
+        #print("port     =", repr(port))
         publish.single(
             topic=topic,
             payload=value,
@@ -16,38 +15,37 @@ class send_mqtt():
             port=port
         )
 
-        print("MQTT OK")
-        
+        #print("MQTT OK")
 class Fetch_mqtt(QThread):
-    def __init__(self,broker,port):
+    def __init__(self,broker,port,topic_read):
         super().__init__()
         self.broker=broker 
         self.port=port 
-    def on_connect(self, reason_code):
-        
-        if reason_code.is_failure:
-           text=f"Failed to connect: {reason_code}. loop_forever() will retry connection"
-           print(text)
-        else :
-           text="connected successfully"
-           print(text)
-           
-    def on_message(self, message):
-    
-        v=(str(message.payload.decode("utf-8")))
-        v=v.split(',')
-        return (v)
+        self.topic_read=topic_read
+        self.data=None 
+    def on_connect(self, client, userdata, flags, reason_code, properties):
+        if reason_code == 0:
+            print("Connected to MQTT Broker!")
+        else:
+            print(f"Connection failed: {reason_code}")
+
+            
+    def on_message(self, client, userdata, message):
+        #print("je suis dans le message") for debug 
+        v = message.payload.decode("utf-8")
+        self.data = v
+
     def run(self):
-        client= mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         client.on_connect = self.on_connect
         client.on_message = self.on_message
-        #connect to the broker
-        client.connect(self.broker,self.port)
-        #sunscribe to the topic 
-        client.subscribe("/data")
-        client.loop_forever() 
-
+        # Connexion au broker
+        client.connect(self.broker, self.port)
+        # Abonnement au topic
+        client.subscribe(self.topic_read)
+        # loop forever
+        client.loop_forever()
 class MQTT(Fetch_mqtt, send_mqtt) :
-    def __init__(self,broker,port):
-            super().__init__(broker,port)
+    def __init__(self,broker,port,topic_read):
+            super().__init__(broker,port,topic_read)
     
