@@ -2,12 +2,14 @@ from load_auth import donnes_connexions
 from imap_tools import MailBox
 from time import sleep 
 from datetime import datetime
+import csv
 from communication_mqtt import MQTT 
 
 broker = 'test.mosquitto.org'
 port = 1883
 topic_envoie ="/envoie"   # envoie de la supervision --> Broker MQTT
 topic_reception="/sender" # reception broker MQTT --> PC supervision 
+com=None 
 sujet=""
 corps=""
 expediteur= None #"dibreyjonatan"
@@ -17,7 +19,7 @@ date=None
 mail_uid=None
 #  forme du critère (objet, expéditeur, mot-clé), lieu et mode de configuration.
 def detection() :
-    global sujet, corps, expediteur, keyword,date,mail_uid
+    global sujet, corps, expediteur, keyword,date,mail_uid,com 
     date_premier_alerte=None # On memorise l'heure de la première détection
     nouvelle_date_alerte=None
     with MailBox("imap.gmail.com").login(email, mot_de_passe) as mailbox:
@@ -43,10 +45,21 @@ def detection() :
                     print("le uid du mail est :",mail_uid)
                     print("date d'émission",date)
                     print("date de détection",datetime.now())
+                    ## Ecriture dans le fichier csv d'alerte 
+                    # uid, expediteur,date_alerte,date_detection
+                    with open('docs/alerte_log.csv', mode='w', newline='') as fichier:
+                            write= csv.writer(fichier)
+                            write.writerow([mail_uid,expediteur,nouvelle_date_alerte,datetime.now()])
+                    ## Envoie alerte, qui sera uid 
+                    com.send(topic_envoie,mail_uid,broker,port)
+
+                   
                 else :
-                    print("c'est le meme mail déjà lu")    
+                    pass 
+                    #print("c'est le meme mail déjà lu")    
 
 def run() :
+    global com 
     com=MQTT(broker,port,topic_reception)
     com.start()
     while 1==1 :
