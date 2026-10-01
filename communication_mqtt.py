@@ -2,8 +2,22 @@ from PySide6.QtCore import Qt,QThread
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 class send_mqtt():
-    def send(topic,value,hostname) : 
-        publish.single(topic, value, hostname)
+    def send(self, topic, value, hostname, port=1883):
+        print("DEBUG")
+        print("topic    =", repr(topic))
+        print("value    =", repr(value))
+        print("hostname =", repr(hostname))
+        print("port     =", repr(port))
+
+        publish.single(
+            topic=topic,
+            payload=value,
+            hostname=hostname,
+            port=port
+        )
+
+        print("MQTT OK")
+        
 class Fetch_mqtt(QThread):
     def __init__(self,broker,port):
         super().__init__()
