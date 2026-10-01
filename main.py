@@ -6,8 +6,8 @@ from communication_mqtt import MQTT
 
 broker = 'test.mosquitto.org'
 port = 1883
-topic_envoie ="/envoie"
-
+topic_envoie ="/envoie"   # envoie de la supervision --> Broker MQTT
+topic_reception="/sender" # reception broker MQTT --> PC supervision 
 sujet=""
 corps=""
 expediteur= None #"dibreyjonatan"
@@ -47,11 +47,14 @@ def detection() :
                     print("c'est le meme mail déjà lu")    
 
 def run() :
-    com=MQTT(broker,port)
+    com=MQTT(broker,port,topic_reception)
     com.start()
     while 1==1 :
-        com.send(topic_envoie,'1',broker,port)
+        #com.send(topic_envoie,'1',broker,port)
         sleep(1)
+        #print("je fais ca")
+        if com.data !=None :
+            print(com.data) 
     #detection()
 if __name__=="__main__" :
     run()
