@@ -26,14 +26,14 @@ def detection() :
         print("Connexion réussie !")
         while 1==1 :
             sleep(10)
-            # il prend le dernier mail 
+            # il prend le dernier mail, le mail le plus haut dans l'application 
             for msg in mailbox.fetch(limit=1, reverse=True):
                 mail_uid=msg.uid 
                 sujet=msg.subject
                 expediteur=msg.from_
                 date=msg.date
                 corps=msg.text
-                print(expediteur, sujet)
+                #print(expediteur, sujet) 
                    #objet du mail ex : mission astreint N°XXXX-XXXX  
                 if expediteur=="dibrey314@gmail.com" and "mission" in sujet.lower() and "astreint" in sujet.lower() :
                     nouvelle_date_alerte=date

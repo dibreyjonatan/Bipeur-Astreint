@@ -9,3 +9,6 @@ https://myaccount.google.com/apppasswords
 
 ## Module python à installer
 > pip install imap-tools
+
+## Validation Surveillance PC et transmission MQTT
+![confirm_](docs/confirmation_detection_envoie_broker.PNG)
