@@ -2,6 +2,12 @@ from load_auth import donnes_connexions
 from imap_tools import MailBox
 from time import sleep 
 from datetime import datetime
+from communication_mqtt import MQTT 
+
+broker = 'test.mosquitto.org'
+port = 1883
+topic_envoie ="/envoie"
+
 sujet=""
 corps=""
 expediteur= None #"dibreyjonatan"
@@ -41,6 +47,11 @@ def detection() :
                     print("c'est le meme mail déjà lu")    
 
 def run() :
-    detection()
+    com=MQTT(broker,port)
+    com.start()
+    while 1==1 :
+        com.send(topic_envoie,'1',broker,port)
+        sleep(1)
+    #detection()
 if __name__=="__main__" :
     run()
