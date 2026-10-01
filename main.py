@@ -53,7 +53,16 @@ def detection() :
                     ## Envoie alerte, qui sera uid 
                     com.send(topic_envoie,mail_uid,broker,port)
 
-                   
+                    ## Je fais le fichier d'acquittement avec un status false 
+                    ## le fichier csv d'acquittement est le suivant
+                    ## uid, date d'émission, date d'acquittement, status
+                    with open('docs/acquittement_log.csv', mode='w', newline='') as fichier:
+                            write= csv.writer(fichier)
+                            write.writerow([mail_uid,expediteur,datetime.now(), None, False])
+                # TODO     
+                
+                #Check si l'uid reçu figure dans le tableau et je verifie l'acquittement     
+                ## à la reception on est censé avoir l'uid et l'acquittement     
                 else :
                     pass 
                     #print("c'est le meme mail déjà lu")    
@@ -61,13 +70,7 @@ def detection() :
 def run() :
     global com 
     com=MQTT(broker,port,topic_reception)
-    com.start()
-    while 1==1 :
-        #com.send(topic_envoie,'1',broker,port)
-        sleep(1)
-        #print("je fais ca")
-        if com.data !=None :
-            print(com.data) 
-    #detection()
+    com.start() 
+    detection()
 if __name__=="__main__" :
     run()
