@@ -12,7 +12,7 @@ class config() :
         self.ordre=ordre
         self.employer=employer
 
-    def load_configs(self):
+    def read_configs(self):
         with open('configuration.txt','r') as f:
          lignes=f.readlines()
          #print(lignes)
@@ -22,8 +22,16 @@ class config() :
            #strip c'est pour enlever les \n à la fin de chaque ligne retenu
            # l'idée ici est de prendre la donnée à la position 1 et d'enlever le \n
            self.L.append(x[1].strip('\n'))
-       
-
-a=config()
-a.load_configs()
-print(a.L)
+    def load_configs(self):
+        self.read_configs()       
+        self.broker=self.L[0]
+        self.port=int(self.L[1])
+        self.topic_envoie=self.L[2]
+        self.topic_reception=self.L[3]
+        self.expediteur=self.L[4]
+        self.ordre=self.L[5]
+        self.employer=self.L[6]
+if __name__=="__main__" :
+    a=config()
+    a.load_configs()
+    print(a.broker, a.port, a.topic_envoie, a.topic_reception, a.expediteur, a.ordre, a.employer)
