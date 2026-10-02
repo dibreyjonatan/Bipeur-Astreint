@@ -5,6 +5,8 @@ from communication_mqtt import MQTT
 from configs.configuration import config 
 from gestion_alerte import gerer_alerte
 from surveillance import surveillance 
+from communication import communication
+com_t=None 
 surveille=None 
 gere_alerte=None
 com=None 
@@ -14,7 +16,6 @@ mail_uid=None
 #  forme du critère (objet, expéditeur, mot-clé), lieu et mode de configuration.
 def main() :
     global configs,com, gere_alerte
-    deja_detecter=0
     with MailBox("imap.gmail.com").login(email, mot_de_passe) as mailbox:
         print("Connexion à la boite mail réussie !")
        
@@ -30,13 +31,16 @@ def main() :
             # il prend le dernier mail, le mail le plus haut dans l'application 
             for msg in mailbox.fetch(limit=1, reverse=True):
                 surveille.detect_alerte(msg,configs,gere_alerte)
-                   # TODO : une classe communication pour transmettre et recevoir les alertes et acquittement respectivement
-                #print(configs.expediteur, configs.ordre,configs.employer) 
-                #objet du mail ex : mission astreint N°XXXX-XXXX  
+                  #print(configs.expediteur, configs.ordre,configs.employer) 
+                  #objet du mail ex : mission astreint N°XXXX-XXXX  
+                  
+            # TODO : une classe communication pour transmettre et recevoir les alertes et acquittement respectivement
+            com_t.transmission(com,configs)
                  
 
 def run() :
-    global com, configs, gere_alerte,surveille
+    global com, configs, gere_alerte,surveille,com_t
+    com_t=communication
     surveille=surveillance 
     configs=config()
     configs.load_configs()
