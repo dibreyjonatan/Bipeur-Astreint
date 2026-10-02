@@ -5,3 +5,4 @@ topic_reception=/sender
 expediteur= dibrey314@gmail.com
 mot_cle_ordre=mission
 mot_cle_personne=astreint
+limit_recouvrement=100
