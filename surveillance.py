@@ -18,7 +18,7 @@ class surveillance():
                 #print(deja_detecter)
                 #print(gere_alerte.presence)
                 if gere_alerte.presence == 1 :
-                        print("c'est une alerte mais déjà détecter !")
+                        print(f"{msg.uid} est une alerte mais déjà détecter !")
                         #print("c'est la class  qui a détecter")
                     
                             #donc l'alerte est unique et non redondante
