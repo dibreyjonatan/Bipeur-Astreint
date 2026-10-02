@@ -6,7 +6,7 @@ class surveillance():
     def __init__():
         pass
     def detect_alerte(msg,configs,gere_alerte):
-         print("je suis ici dans la class")
+         #print("je suis ici dans la class")
          test_mail=0
          if msg.from_ == configs.expediteur and configs.ordre in msg.subject.lower() and configs.employer in msg.subject.lower() :
                 # test de présence d'un mail déjà détecter 
@@ -19,11 +19,11 @@ class surveillance():
                 #print(gere_alerte.presence)
                 if gere_alerte.presence == 1 :
                         print("c'est une alerte mais déjà détecter !")
-                        print("c'est la class  qui a détecter")
+                        #print("c'est la class  qui a détecter")
                     
                             #donc l'alerte est unique et non redondante
          if gere_alerte.presence  == 0 and test_mail==1:
-                print("cette détection vient de la class")
+                #print("cette détection vient de la class")
                 print("alerte provient du boss !!!")
                 print("le uid du mail est :",msg.uid)
                 print("date d'émission",msg.date)
