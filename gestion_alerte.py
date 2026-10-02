@@ -17,14 +17,9 @@ class gerer_alerte() :
           #return L 
           if new_alerte in L :
                self.presence=1 #donc elle est déjà presente
-               
-            #  if int(row[0]) == new_alerte :
-             #      print(row[0])
-              #     self.presence=k   
-               #    k=1     
+          
           return self.presence                    
-          #return k    
-          # BES-026       
+      
      def recouvrement(self,data,configs) :
           # on a besoin de la methode detecter_alerte 
           # Avant recouvrement on calcul la longueur du fichier csv avant 
