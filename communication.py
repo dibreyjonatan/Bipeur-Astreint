@@ -18,7 +18,7 @@ class communication :
                     # l'alerte n'a pas encore été transmise
                     # transmission
                     count_envoi+=1
-                    print(type(file.iloc[i,0]))
+                    #print(type(file.iloc[i,0]))
                     com.send(configs.topic_envoie,int(file.iloc[i,0]),configs.broker,configs.port)
                     print("envoie réussit")
                     # mise à jour du fichier csv
@@ -31,7 +31,7 @@ class communication :
                print(f"J'ai transmis {count_envoi} alerte(s) au broker ")            
      def reception(com=None):
             # Ce poste prouve bien que la reception se fait tout le temps qu'il y'a la donnée 
-            print(type(com.data))
+            #print(type(com.data))
             if com.data == None :
                pass
             else :
@@ -41,15 +41,20 @@ class communication :
             com.data=None 
             # TODO acquittement 
             file=read_csv("docs/acquittement_log.csv",header=None, sep=",")
-            count_envoi=0
+            count_recois=0
             for i in range(len(file)):
                    check=file.iloc[i,5]
-                   print(file.iloc[i,5])
+                   #print(file.iloc[i,5])
+                   # On garanti également l'unicité d'acquittement
                    if info==file.iloc[i,0] and check == False :
+                        count_recois+=1
                         print("L'astreint a fait l'acquittement")
                         file.iloc[i,5]=True
                         file.to_csv("docs/acquittement_log.csv", header=None,index=False,sep=",")     
-
+            if count_recois == 0 :
+                 pass
+            else :
+                 print("j'ai fait la mise à jour du log des acquittements veuillez l'ouvrir")
             
 
 
