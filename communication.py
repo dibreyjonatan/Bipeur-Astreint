@@ -1,5 +1,6 @@
 # Cette classe sera chargé de la communication avec l'exterieur
 from pandas import read_csv 
+from datetime import datetime
 class communication :
      def __init__():
           pass
@@ -37,6 +38,7 @@ class communication :
             else :
                  print(f"j'ai reçu ca {com.data}")
             # je remet le data à None pour la prochaine reception
+            # BES-051 fournir une trace d'acquittement et la date également
             info=int(com.data)
             com.data=None 
             # TODO acquittement 
@@ -49,6 +51,7 @@ class communication :
                    if info==file.iloc[i,0] and check == False :
                         count_recois+=1
                         print("L'astreint a fait l'acquittement")
+                        file.iloc[i,4]=str(datetime.now())
                         file.iloc[i,5]=True
                         file.to_csv("docs/acquittement_log.csv", header=None,index=False,sep=",")     
             if count_recois == 0 :
