@@ -1,7 +1,7 @@
 
 class config() :
     
-    def __init__(self,L=[],broker=None,port=None,topic_e=None,topic_r=None,expediteur=None,ordre=None,employer=None):
+    def __init__(self,L=[],broker=None,port=None,topic_e=None,topic_r=None,expediteur=None,ordre=None,employer=None,limit=None):
         pass
         self.L=L
         self.broker=broker
@@ -13,6 +13,7 @@ class config() :
         self.expediteur=expediteur
         self.ordre=ordre
         self.employer=employer
+        self.limit_recouvrement=limit
 
     def read_configs(self):
         with open('configs/configuration.txt','r') as f:
@@ -33,8 +34,10 @@ class config() :
         self.expediteur=self.L[4].strip(' ')
         self.ordre=self.L[5].strip(' ')
         self.employer=self.L[6].strip(' ')
+        self.limit_recouvrement=int(self.L[7])
+
 if __name__=="__main__" :
     a=config()
     a.load_configs()
-    print(a.broker, a.port, a.topic_envoie, a.topic_reception, a.expediteur, a.ordre, a.employer)
-    print(a.broker, a.port, a.topic_envoie, a.topic_reception, a.expediteur, a.ordre, a.employer)
+    print(a.broker, a.port, a.topic_envoie, a.topic_reception, a.expediteur, a.ordre, a.employer, a.limit_recouvrement)
+    print(a.broker, a.port, a.topic_envoie, a.topic_reception, a.expediteur, a.ordre, a.employer, a.limit_recouvrement)
