@@ -4,26 +4,20 @@ from time import sleep
 from datetime import datetime
 import csv
 from communication_mqtt import MQTT 
+from configs.configuration import config 
 
-broker = 'test.mosquitto.org'
-port = 1883
-topic_envoie ="/envoie"   # envoie de la supervision --> Broker MQTT
-topic_reception="/sender" # reception broker MQTT --> PC supervision 
 com=None 
-sujet=""
-corps=""
-expediteur= None #"dibreyjonatan"
-keyword="mission"
+configs=None 
 date=None
 (email,mot_de_passe)=donnes_connexions()
 mail_uid=None
 #  forme du critère (objet, expéditeur, mot-clé), lieu et mode de configuration.
 def detection() :
-    global sujet, corps, expediteur, keyword,date,mail_uid,com 
+    global configs, sujet, corps, expediteur, keyword,date,mail_uid,com 
     date_premier_alerte=None # On memorise l'heure de la première détection
     nouvelle_date_alerte=None
     with MailBox("imap.gmail.com").login(email, mot_de_passe) as mailbox:
-        print("Connexion réussie !")
+        print("Connexion à la boite réussie !")
         while 1==1 :
             sleep(10)
             # il prend le dernier mail, le mail le plus haut dans l'application 
@@ -34,9 +28,12 @@ def detection() :
                 date=msg.date
                 corps=msg.text
                 #print(expediteur, sujet) 
+                print(configs.expediteur, configs.ordre,configs.employer) 
+                print(expediteur) 
                    #objet du mail ex : mission astreint N°XXXX-XXXX  
-                if expediteur=="dibrey314@gmail.com" and "mission" in sujet.lower() and "astreint" in sujet.lower() :
+                if expediteur == configs.expediteur and configs.ordre in sujet.lower() and configs.employer in sujet.lower() :
                     nouvelle_date_alerte=date
+                    print("j'ai détecté")
                     
 
                 if nouvelle_date_alerte!=date_premier_alerte :
@@ -51,8 +48,8 @@ def detection() :
                             write= csv.writer(fichier)
                             write.writerow([mail_uid,expediteur,nouvelle_date_alerte,datetime.now()])
                     ## Envoie alerte, qui sera uid 
-                    com.send(topic_envoie,mail_uid,broker,port)
-
+                    com.send(configs.topic_envoie,mail_uid,configs.broker,configs.port)
+                    print("envoie réussit")
                     ## Je fais le fichier d'acquittement avec un status false 
                     ## le fichier csv d'acquittement est le suivant
                     ## uid, date d'émission, date d'acquittement, status
@@ -68,8 +65,11 @@ def detection() :
                     #print("c'est le meme mail déjà lu")    
 
 def run() :
-    global com 
-    com=MQTT(broker,port,topic_reception)
+    global com, configs 
+    configs=config()
+    configs.load_configs()
+    print(configs.broker,configs.port,configs.topic_reception)
+    com=MQTT(configs.broker,configs.port,configs.topic_reception)
     com.start() 
     detection()
 if __name__=="__main__" :
