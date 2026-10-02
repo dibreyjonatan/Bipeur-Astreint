@@ -6,6 +6,8 @@ import csv
 from communication_mqtt import MQTT 
 from configs.configuration import config 
 from gestion_alerte import gerer_alerte
+from surveillance import surveillance 
+surveille=None 
 gere_alerte=None
 com=None 
 configs=None 
@@ -17,6 +19,8 @@ def detection() :
     deja_detecter=0
     with MailBox("imap.gmail.com").login(email, mot_de_passe) as mailbox:
         print("Connexion à la boite mail réussie !")
+       
+        # Recouvrement en cas de perte de connexion ou lors d'une reconnexion 
         while 1==1 :
             sleep(10)
             # il prend le dernier mail, le mail le plus haut dans l'application 
@@ -27,6 +31,9 @@ def detection() :
                 date_alerte=msg.date
                 corps=msg.text
                 print(expediteur, sujet) 
+                #on détecte juste l'alerte
+                # TODO : une classe communication pour transmettre et recevoir les alertes et acquittement respectivement
+                surveille.detect_alerte(msg,configs,gere_alerte)
                 #print(configs.expediteur, configs.ordre,configs.employer) 
                 #objet du mail ex : mission astreint N°XXXX-XXXX  
                 test_mail=0
@@ -70,7 +77,8 @@ def detection() :
                     #print("c'est le meme mail déjà lu")    
 
 def run() :
-    global com, configs, gere_alerte
+    global com, configs, gere_alerte,surveille
+    surveille=surveillance 
     configs=config()
     configs.load_configs()
     gere_alerte= gerer_alerte()
