@@ -33,9 +33,10 @@ def main() :
                 surveille.detect_alerte(msg,configs,gere_alerte)
                   #print(configs.expediteur, configs.ordre,configs.employer) 
                   #objet du mail ex : mission astreint N°XXXX-XXXX  
-                  
+
             # TODO : une classe communication pour transmettre et recevoir les alertes et acquittement respectivement
             com_t.transmission(com,configs)
+            com_t.reception(com)
                  
 
 def run() :
