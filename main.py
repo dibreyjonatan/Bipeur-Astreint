@@ -21,6 +21,11 @@ def detection() :
         print("Connexion à la boite mail réussie !")
        
         # Recouvrement en cas de perte de connexion ou lors d'une reconnexion 
+        # pour satisfait le besoin BES-012 ( aucun mail manqué )
+        data=[]
+        for msg in mailbox.fetch(limit=configs.limit_recouvrement, reverse=True):
+            data.append(msg)
+        gere_alerte.recouvrement(data,configs)
         while 1==1 :
             sleep(10)
             # il prend le dernier mail, le mail le plus haut dans l'application 
