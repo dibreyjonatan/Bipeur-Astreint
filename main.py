@@ -44,7 +44,7 @@ def detection() :
                     print("date de détection",datetime.now())
                     ## Ecriture dans le fichier csv d'alerte 
                     # uid, expediteur,date_alerte,date_detection
-                    with open('docs/alerte_log.csv', mode='w', newline='') as fichier:
+                    with open('docs/alerte_log.csv', mode='a', newline='') as fichier:
                             write= csv.writer(fichier)
                             write.writerow([mail_uid,expediteur,nouvelle_date_alerte,datetime.now()])
                     ## Envoie alerte, qui sera uid 
@@ -53,7 +53,7 @@ def detection() :
                     ## Je fais le fichier d'acquittement avec un status false 
                     ## le fichier csv d'acquittement est le suivant
                     ## uid, date d'émission, date d'acquittement, status
-                    with open('docs/acquittement_log.csv', mode='w', newline='') as fichier:
+                    with open('docs/acquittement_log.csv', mode='a', newline='') as fichier:
                             write= csv.writer(fichier)
                             write.writerow([mail_uid,expediteur,datetime.now(), None, False])
                 # TODO     
