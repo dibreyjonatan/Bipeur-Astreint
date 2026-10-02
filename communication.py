@@ -28,7 +28,12 @@ class communication :
              pass 
           else :
                print(f"J'ai transmis {count_envoi} alertes au broker ")            
-
+     def reception(com=None):
+            if com.data == None :
+               pass
+            else :
+                 print(f"j'ai reçu ca {com.data}")
+                 
 
 if __name__=="__main__" :
      a=communication
