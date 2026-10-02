@@ -51,7 +51,7 @@ def run():
     time.sleep(1)
     while 1==1 : 
     # Envoie le message
-         publish(client, "1")
+         publish(client, "10917,1")
 
     # Attend que le message soit envoyé
          time.sleep(1)
