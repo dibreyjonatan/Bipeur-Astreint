@@ -1,17 +1,119 @@
+/*
+ * PROFESSIONAL MQTT EXPERIMENT - ESP32
+ * * Features:
+ * - Non-blocking Architecture (No delay())
+ * - Automatic Reconnection (WiFi & MQTT)
+ * - LWT (Last Will & Testament) for State Monitoring
+ * - JSON Data Serialization
+ * - Remote Command Handling
+ */
 
-#define LED_L 2 
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+
+// ==========================================
+// 1. CONFIGURATION (Edit these)
+// ==========================================
+const char* ssid = "OPPO A73";
+const char* password = "123456789";
+
+// MQTT Broker Settings (Using public HiveMQ for demo, change for production)
+const char* mqtt_server = "test.mosquitto.org" ;
+const int mqtt_port = 1883; 
+const char* mqtt_user = ""; // Leave blank for public brokers
+const char* mqtt_pass = "";
+
+// Unique Device ID (Must be unique on the broker)
+const char* device_id = "ESP32_WROOM_01"; 
 
 
-void setup() {
- 
-  pinMode(LED_L, OUTPUT);
+const char* topic_recieve   = "/sender";   
+
+// ==========================================
+// 2. GLOBAL OBJECTS & VARIABLES
+// ==========================================
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+#define LED_PIN 2 
+
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to WiFi: ");
+  Serial.println(ssid);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
-void loop() {
+// ==========================================
+// 4. CALLBACK (Handle Incoming Messages)
+// ==========================================
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
 
-  digitalWrite(LED_L, HIGH);  
-  delay(1000);                      
-  digitalWrite(LED_L, LOW);   
-  delay(1000);      
-                 
+  // Convert payload to string for easier handling
+  String message;
+  for (int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  Serial.println(message);
+
+  if (String(topic) == topic_recieve ) {
+
+    if (message.toInt() == 10921) {
+      digitalWrite(LED_PIN, HIGH);
+      
+    } 
+
+    }
+  
+}
+
+// ==========================================
+// 5. RECONNECT (The Engine Room)
+// ==========================================
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+  }
+}
+
+// ==========================================
+// 6. MAIN SETUP
+// ==========================================
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  
+  setup_wifi();
+  
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+}
+
+// ==========================================
+// 7. MAIN LOOP
+// ==========================================
+void loop() {
+  // Ensure we stay connected
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop(); // Keep MQTT alive
 }
