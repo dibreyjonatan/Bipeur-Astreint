@@ -11,7 +11,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-
+#define MAX 100
 // ==========================================
 // 1. CONFIGURATION (Edit these)
 // ==========================================
@@ -28,11 +28,12 @@ const char* mqtt_pass = "";
 const char* device_id = "ESP32_WROOM_01"; 
 
 
-const char* topic_recieve   = "/sender";   
+const char* topic_recieve   = "/envoie";   
 
 // ==========================================
 // 2. GLOBAL OBJECTS & VARIABLES
 // ==========================================
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -74,23 +75,36 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(message);
 
   if (String(topic) == topic_recieve ) {
-
-    if (message.toInt() == 10921) {
       digitalWrite(LED_PIN, HIGH);
-      
+      delay(2000); 
     } 
+
+     //digitalWrite(LED_PIN, LOW);
 
     }
   
-}
+  
+
 
 // ==========================================
 // 5. RECONNECT (The Engine Room)
 // ==========================================
 void reconnect() {
-  // Loop until we're reconnected
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
+
+    if (client.connect(device_id, mqtt_user, mqtt_pass)) {
+      Serial.println(" connected!");
+
+      client.subscribe(topic_recieve);
+      Serial.println("Subscribed to /sender");
+
+    } else {
+      Serial.print(" failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" retrying in 2 seconds");
+      delay(2000);
+    }
   }
 }
 
@@ -104,6 +118,7 @@ void setup() {
   setup_wifi();
   
   client.setServer(mqtt_server, mqtt_port);
+  client.subscribe(topic_recieve);
   client.setCallback(callback);
 }
 
